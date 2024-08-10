@@ -1,51 +1,22 @@
 pipeline {
-    agent any
-
+    agent none
     stages {
-        stage('Backend Build') {
+        stage('Back-end') {
             agent {
-                docker {
-                    image 'node:16-alpine'
-                    args '-v /var/lib/jenkins/workspace:/workspace'
-                }
+                docker { image 'openjdk:11-jdk-slim' }
             }
             steps {
-                script {
-                    dir('backend') {
-                        sh 'npm install'
-                        sh 'npm run build'
-                    }
-                }
+                sh 'java -version'
             }
         }
-
-        stage('Frontend Build') {
+        stage('Front-end') {
             agent {
-                docker {
-                    image 'node:16-alpine'
-                    args '-v /var/lib/jenkins/workspace:/workspace'
-                }
+                docker { image 'node:16-alpine' }
             }
             steps {
-                script {
-                    dir('frontend') {
-                        sh 'npm install'
-                        sh 'npm run build'
-                    }
-                }
+                sh 'node --version'
             }
-        }
-    }
-
-    post {
-        always {
-            echo 'Cleaning up...'
-        }
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed!'
         }
     }
 }
+
